@@ -1,0 +1,81 @@
+@media screen and (min-width:480px) {
+.cell{
+	width:10%;
+}
+		
+}
+@media screen and (min-width:768px) and (max-width:1024){
+.cell{
+	width:10%;
+}	
+}
+@media screen and (min-width:1024px) {
+.cell{
+	width:10%;
+}	
+}	
+
+table{
+	margin-top: 5%;
+	margin-left: 5%;
+	width:90%;
+	aspect-ratio: 10/11;
+	border-collapse: collapse;
+}
+tbody{
+	vertical-align: top;
+}
+
+.cell{
+	font-size:7vw;
+	font-family: "Hiragino maru Gothic ProN W4", "Hiragino Kaku Gothic Pro","Hiragino Sans", "arial", "Meiryo", "MS PGothic", sans-serif!important;
+	color:black;
+	text-align: center;
+	border:2px solid;
+	aspect-ratio: 11/10;
+}
+.cell[st="display"]{
+	background-color:white;
+}
+.cell[st="selected"]{
+	background-color:rgb(245, 256, 256);
+}
+.cell[st="movable"]{
+	background-color:rgb(256, 256, 245);
+}
+.cell[st="movedto"]{
+	background-color:rgb(256, 245, 256);
+}
+.cell[st="movedfm"]{
+	background-color:rgb(256, 256, 245);
+}
+.cell[turn="w"]{
+  transform: rotate(180deg);
+}
+
+.stand{
+	font-size:6vw;
+	font-family: "Hiragino maru Gothic ProN W4", "Hiragino Kaku Gothic Pro","Hiragino Sans", "arial", "Meiryo", "MS PGothic", sans-serif!important;
+	color:black;
+	text-align: center;
+}
+
+.stand[turn="w"]{
+  transform: rotate(180deg);
+}
+
+.stand[st="display"]{
+	background-color:white;
+}
+.stand[st="selected"]{
+	background-color:rgb(230, 256, 256);
+}
+.stand[st="movable"]{
+	background-color:yellow;
+}
+.stand[st="movedto"]{
+	background-color:green;
+}
+.stand[st="movedfm"]{
+	background-color:pink;
+}
