@@ -49,10 +49,13 @@ tbody{
 .cell[st="movedfm"]{
 	background-color:rgb(256, 256, 245);
 }
-.cell[turn="w"]{
+.cell[turn="w"][data-dir="s"]{
   transform: rotate(180deg);
 }
-
+.cell[turn="b"][data-dir="r"]{
+	transform: rotate(180deg);
+  }
+  
 .stand{
 	font-size:6vw;
 	font-family: "Hiragino maru Gothic ProN W4", "Hiragino Kaku Gothic Pro","Hiragino Sans", "arial", "Meiryo", "MS PGothic", sans-serif!important;
@@ -60,10 +63,13 @@ tbody{
 	text-align: center;
 }
 
-.stand[turn="w"]{
+.stand[turn="w"][data-dir="s"]{
   transform: rotate(180deg);
 }
-
+.stand[turn="b"][data-dir="r"]{
+	transform: rotate(180deg);
+}
+  
 .stand[st="display"]{
 	background-color:white;
 }
