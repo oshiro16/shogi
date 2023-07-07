@@ -5,11 +5,23 @@ const posy2kigou=["","一","二","三","四","五","六","七","八","九"];
 
 const kifu=[];
 
+/**
+ * 棋譜の記録
+ * 
+ * 駒の動きを、usi表記にし、kifuTRに追加する
+ * 
+ * @param {*} fPos 　元の場所
+ * @param {*} tPos 　先の場所
+ * @param {*} nari 　成りの有無　+
+ * @param {*} piece 駒の種類
+ */
 function appendKifu(fPos,tPos,nari,piece){
+    //usi表記の棋号をkifuに追加する
     var move="";
     move=posToUsi(fPos)+posToUsi(tPos)+nari;
     kifu.push(move);
 
+    //棋号を画面に表示
     var kigou=getKigou(fPos,tPos,nari,piece);
     var kifuTD=document.createElement('span');
     kifuTD.innerHTML=kigou+"<br>";
@@ -18,9 +30,21 @@ function appendKifu(fPos,tPos,nari,piece){
 
 }
 
+/**
+ * 棋譜を一つ削除する
+ */
 function deleteKifu(){
     kifu.pop();
 }
+
+/**
+ * 棋号を作成して
+ * @param {*} fPos 
+ * @param {*} tPos 
+ * @param {*} nari 
+ * @param {*} piece 
+ * @returns 
+ */
 function getKigou(fPos,tPos,nari,piece){
     var kigou="";
 
