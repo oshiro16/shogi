@@ -1,12 +1,14 @@
 var turn="b";
 var times=0;
+var maxtimes=0;
 var bholds=[0,0,0,0,0,0,0];
 var wholds=[0,0,0,0,0,0,0];
 var start=false;
+var btable=[[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0]];
 
 
 function startShogi(){
-    createTable();
+    createTable("s");//s or r
     loadPiece(iniboard);
     start=true;
 
@@ -247,67 +249,59 @@ function cellMovablityCheck(e){
 
 }
 
+function moveByUSI(moveUSI){
+    var fpiece="";
+    var nari="";
 
-function movePiece(e){
-    var piece=e.getAttribute('piece');
-    var pos=e.getAttribute('pos');
-    var x=parseInt(pos.substr(0,1));
-    var y=parseInt(pos.substr(1,1));
-
-    var fm=document.querySelector("td[st='selected']")
-    
     clearStatus();
 
-    //移動元情報を取得
-    var fmpiece=fm.getAttribute('piece');//駒の種類
-    var fmpos=fm.getAttribute('pos');//場所
-    var fmclass=fm.getAttribute('class');//置き駒　cell,持ち駒　stand
-    var fmtn=fm.getAttribute('turn');
-    var fmx=parseInt(fmpos.substr(0,1));
-    var fmy=parseInt(fmpos.substr(1,1));
-    var fmst=fm.getAttribute('st');
-
-    //成るかどうかの判定
-    var nari="";
-    var Upiece=fmpiece.toUpperCase();
-    if(fmclass=="cell" && (Upiece=="R" || Upiece=="B" || Upiece=="S" || Upiece=="N" || Upiece=="L" || Upiece=="P")){
-        if((turn == "b" && y<4) || (turn =="w" && y>6)){
-            var check=window.confirm("成りますか？");
-            if(check){
-                nari="+";
-            }
-        }
+    if(moveUSI.length==5){
+        nari="+";
     }
+
+    //移動元情報
+    
+    //持ち駒の場合
+    if(moveUSI.substr(1,1)=="*"){
+        fpiece=moveUSI.substr(0,1);
+        useHold(fpiece);
+    }else{
+    //置き駒の場合
+        var fpos=UsiToPos(moveUSI.substr(0,2));
+        var fcell=document.querySelector("td[pos='"+fpos+"']");
+        fpiece=fcell.getAttribute('piece');
+
+        //駒を削除
+        fcell.setAttribute('piece','non');
+        fcell.innerHTML="&nbsp";
+        fcell.setAttribute('st','movedfm');
+        fcell.setAttribute('turn','n');
+        var fx=Number(fpos.substr(0,1));
+        var fy=Number(fpos.substr(1,1));
+        btable[fy-1][fx-1]=0;
+    }
+
+    //移動先
+    var tpos=UsiToPos(moveUSI.substr(2,2));
+    var tcell=document.querySelector("td[pos='"+tpos+"']");
+    var tpiece=tcell.getAttribute('piece');
+    //駒を移動先に置く
+    tcell.setAttribute('piece',nari+fpiece);
+    tcell.innerHTML=getPieceName(nari+fpiece);
+    tcell.setAttribute('st','movedto');
+    tcell.setAttribute('turn',turn);
+    var tx=Number(tpos.substr(0,1));
+    var ty=Number(tpos.substr(1,1));
+    btable[ty-1][tx-1]=nari+fpiece;
+
 
     //相手の駒を取って、手持ちにする
-    if(piece != "non"){
+    if(tpiece != "non"){
         if(turn=="b"){
-            getHold(piece.toUpperCase());
+            getHold(fpiece.toUpperCase());
         }else{
-            getHold(piece.toLowerCase());
+            getHold(fpiece.toLowerCase());
         }
-    }
-
-    //駒を移動先に置く
-    e.setAttribute('piece',nari+fmpiece);
-    e.innerHTML=getPieceName(nari+fmpiece);
-    e.setAttribute('st','movedto');
-    e.setAttribute('turn',turn);
-
-    //移動元から、駒を削除する。
-    if(fmclass == 'cell'){
-        fm.setAttribute('piece','non');
-        fm.innerHTML="&nbsp";
-        fm.setAttribute('st','movedfm');
-        fm.setAttribute('turn','n');
-    }else{
-        useHold(fmpiece);
-    }
-
-    if(fmclass == 'cell'){
-        appendKifu(fmpos,pos,nari,fmpiece);
-    }else{
-        appendKifu(fmpiece.toUpperCase()+"*",pos,"",fmpiece);
     }
 
     if(turn=="b"){
@@ -315,48 +309,132 @@ function movePiece(e){
     } else {
         turn="b";
     }
+    times++;
+    maxtimes++;
+    setInfo();
 
 }
+
+/**
+ * 駒をクリックした際に、USIの値を返し、記録する。
+ * @param {*} e 
+ * @returns 
+ */
+function getClickMoveUSI(e){
+    var pos=e.getAttribute('pos');
+    var y=parseInt(pos.substr(1,1));
+
+    //移動元情報を取得
+    var fm=document.querySelector("td[st='selected']");
+    var fmpiece=fm.getAttribute('piece');//駒の種類
+    var fmpos=fm.getAttribute('pos');//場所
+    var fmclass=fm.getAttribute('class');//置き駒　cell,持ち駒　stand
+
+    //成るかどうかの判定
+    var nari="";
+    var Upiece=fmpiece.toUpperCase();
+    //成らないといけないです場合
+    if(fmclass=="cell" && (Upiece=="N" || Upiece=="L" || Upiece=="P")){
+        if((turn == "b" && y == 1) || (turn =="w" && y==9)){
+            nari="+";
+        }
+    }else if(fmclass=="cell" && Upiece=="N"){
+        if((turn == "b" && y == 2) || (turn =="w" && y==8)){
+            nari="+";
+        }
+    }
+    //成れる場合
+    else if(fmclass=="cell" && (Upiece=="R" || Upiece=="B" || Upiece=="S" || Upiece=="N" || Upiece=="L" || Upiece=="P")){
+        if((turn == "b" && y<4) || (turn =="w" && y>6)){
+            var check=window.confirm("成りますか？");
+            if(check){
+                nari="+";
+            }else{
+                nari="-";
+            }
+        }
+    }
+
+    var move="";
+    if(fmclass == 'cell'){
+        move=posToUsi(fmpos)+posToUsi(pos)+nari;
+    }else{
+        move=fmpiece.toUpperCase()+"*"+posToUsi(pos);
+    }
+
+    //usi表記の棋号をkifuに追加する
+    if(fmclass == 'cell'){
+        appendKifu(fmpos,pos,nari,fmpiece);
+    }else{
+        appendKifu(fmpiece.toUpperCase()+"*",pos,"",fmpiece);
+    }
+    return move;
+}
+
+function movePiece(e){
+    var moveUSI=getClickMoveUSI(e);
+    kifuUSIList.push(moveUSI);
+    moveByUSI(moveUSI);
+}
+
 
 /******************************************
  * 升目の作成
 ******************************************/
-function createTable(){
+function createTable(direction){
 
+    if(direction=="s"){
+        bb="b";
+        bw="w";
+    }else{
+        bb="w";
+        bw="b";
+    }
     var boardHTML="";
-    var tdHTMLs="<td st='display' piece='non' turn='n' ";
+    var tdHTMLs="<td st='display' piece='non' turn='n' data-dir='"+direction+"' ";
     var tdHTMLe=" onclick='selectCell(this)'>&nbsp</td>";
     //後手駒台
     boardHTML+="<tr>";
     for(let i=1;i<10;i++){
-        boardHTML+=tdHTMLs+"class='stand'  cnt='0' pos='nw"+i+"'"+tdHTMLe;
+        boardHTML+=tdHTMLs+"class='stand'  cnt='0' pos='n"+bw+i+"'"+tdHTMLe;
     }
     boardHTML+="</tr>";
     boardHTML+="<tr>";
     for(let i=1;i<10;i++){
-        boardHTML+=tdHTMLs+"class='stand'  cnt='0' pos='w"+i+"'"+tdHTMLe;
+        boardHTML+=tdHTMLs+"class='stand'  cnt='0' pos='"+bw+i+"'"+tdHTMLe;
     }
     boardHTML+="</tr>";
 
     // 升
-    for(let i=1;i<10;i++){
-        boardHTML+="<tr>";
-        for(let j=1;j<10;j++){
-            boardHTML+=tdHTMLs+"class='cell' pos='"+j+i+"'"+tdHTMLe;
+    if(direction=="s"){
+        for(let i=1;i<10;i++){
+            boardHTML+="<tr>";
+            for(let j=1;j<10;j++){
+                boardHTML+=tdHTMLs+"class='cell' pos='"+j+i+"'"+tdHTMLe;
+            }
+            boardHTML+="</tr>";
         }
-        boardHTML+="</tr>";
-    }
+        }else{
+            for(let i=9;i>0;i--){
+                boardHTML+="<tr>";
+                for(let j=9;j>0;j--){
+                    boardHTML+=tdHTMLs+"class='cell' pos='"+j+i+"'"+tdHTMLe;
+                }
+                boardHTML+="</tr>";
+            }
+            }
 
     //先手駒台
     boardHTML+="<tr>";
     for(let i=9;i>0;i--){
-        boardHTML+=tdHTMLs+"class='stand'  cnt='0' pos='b"+i+"'"+tdHTMLe;
+        boardHTML+=tdHTMLs+"class='stand'  cnt='0' pos='"+bb+i+"'"+tdHTMLe;
     }
     boardHTML+="</tr>";
     boardHTML+="<tr>";
     for(let i=9;i>0;i--){
-        boardHTML+=tdHTMLs+"class='stand'  cnt='0' pos='nb"+i+"'"+tdHTMLe;
+        boardHTML+=tdHTMLs+"class='stand'  cnt='0' pos='n"+bb+i+"'"+tdHTMLe;
     }
+    
 
 var board=document.querySelector("#board");
 board.innerHTML=boardHTML;
@@ -368,11 +446,12 @@ kifu.innerHTML="";
 }
 
 function loadPiece(inText){
+    btable=[[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0]];
     var strs  = inText.split(' ');
 
         turn  = strs[1]; //先手、後手
     var holds = strs[2]; //持ち駒
-        times = strs[3]; //手数
+        times = parseInt(strs[3])-1; //手数
 
     //駒の配置
     var lines=strs[0].split('/');
@@ -389,6 +468,8 @@ function loadPiece(inText){
             if(!isNaN(piece)){
                 x=x+parseInt(piece);
             }else{
+                btable[i][x-1]=piece;
+
                 var cell=document.querySelector("td[pos='"+x+(i+1)+"']");
                 cell.innerHTML=getPieceName(piece);
                 // cell.innerHTML=piece;
@@ -406,6 +487,8 @@ function loadPiece(inText){
         }
     }
     loadHolds(holds);
+
+    setInfo();
 }
 
 
@@ -481,4 +564,14 @@ function setHolds(holds,turn){
         stand.innerHTML=" ";
     }
     
+}
+
+
+function setInfo(){
+    var tturn="先手"
+    if(turn=="w"){
+        tturn="後手"
+    }
+    var info=document.querySelector("#info");
+    info.innerHTML=tturn+" "+(times+1)+"手目";
 }
