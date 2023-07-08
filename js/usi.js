@@ -4,8 +4,9 @@ const posy2kigou=["","一","二","三","四","五","六","七","八","九"];
 const holdName=["R","B","G","S","N","L","P"];
 
 
-const kifuUSIList=[];
-const kifuList=[];
+const kifuUSIList=[];//棋譜（USI）
+const kifuList=[];//棋譜（日本語）
+const kyokumenList=[]; //局面(USI)
 
 /**
  * 棋譜の記録
@@ -32,6 +33,8 @@ function appendKifu(fPos,tPos,nari,piece){
     kifuTD.innerHTML=(times+1)+" : "+kigou+"<br>";
     var kifuTR=document.getElementById('kifu');
     kifuTR.appendChild(kifuTD);
+
+    kyokumenList.push(getUSI());
 }
 
 /**

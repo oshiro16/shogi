@@ -377,97 +377,6 @@ function movePiece(e){
     moveByUSI(moveUSI);
 }
 
-function movePieceOld(e){
-    var piece=e.getAttribute('piece');
-    var pos=e.getAttribute('pos');
-    var x=parseInt(pos.substr(0,1));
-    var y=parseInt(pos.substr(1,1));
-
-    var fm=document.querySelector("td[st='selected']")
-    
-    clearStatus();
-
-    //移動元情報を取得
-    var fmpiece=fm.getAttribute('piece');//駒の種類
-    var fmpos=fm.getAttribute('pos');//場所
-    var fmclass=fm.getAttribute('class');//置き駒　cell,持ち駒　stand
-    var fmtn=fm.getAttribute('turn');
-    var fmx=parseInt(fmpos.substr(0,1));
-    var fmy=parseInt(fmpos.substr(1,1));
-    var fmst=fm.getAttribute('st');
-
-    //成るかどうかの判定
-    var nari="";
-    var Upiece=fmpiece.toUpperCase();
-    //成らないといけないです場合
-    if(fmclass=="cell" && (Upiece=="N" || Upiece=="L" || Upiece=="P")){
-        if((turn == "b" && y == 1) || (turn =="w" && y==9)){
-            nari="+";
-        }
-    }else if(fmclass=="cell" && Upiece=="N"){
-        if((turn == "b" && y == 2) || (turn =="w" && y==8)){
-            nari="+";
-        }
-    }
-    //成れる場合
-    else if(fmclass=="cell" && (Upiece=="R" || Upiece=="B" || Upiece=="S" || Upiece=="N" || Upiece=="L" || Upiece=="P")){
-        if((turn == "b" && y<4) || (turn =="w" && y>6)){
-            var check=window.confirm("成りますか？");
-            if(check){
-                nari="+";
-            }else{
-                nari="-";
-            }
-        }
-    }
-
-    //相手の駒を取って、手持ちにする
-    if(piece != "non"){
-        if(turn=="b"){
-            getHold(piece.toUpperCase());
-        }else{
-            getHold(piece.toLowerCase());
-        }
-    }
-
-    //駒を移動先に置く
-    if(nari=="+"){
-        e.setAttribute('piece',nari+fmpiece);
-        e.innerHTML=getPieceName(nari+fmpiece);
-        btable[y-1][x-1]=nari+fmpiece;
-    }else{
-        e.setAttribute('piece',fmpiece);
-        e.innerHTML=getPieceName(fmpiece);
-        btable[y-1][x-1]=fmpiece;
-    }
-    e.setAttribute('st','movedto');
-    e.setAttribute('turn',turn);
-
-    //移動元から、駒を削除する。
-    if(fmclass == 'cell'){
-        fm.setAttribute('piece','non');
-        fm.innerHTML="&nbsp";
-        fm.setAttribute('st','movedfm');
-        fm.setAttribute('turn','n');
-        btable[fmy-1][fmx-1]=0;
-    }else{
-        useHold(fmpiece);
-    }
-
-    if(fmclass == 'cell'){
-        appendKifu(fmpos,pos,nari,fmpiece);
-    }else{
-        appendKifu(fmpiece.toUpperCase()+"*",pos,"",fmpiece);
-    }
-    if(turn=="b"){
-        turn="w";
-    } else {
-        turn="b";
-    }
-    times++;
-    maxtimes++;
-    setInfo();
-}
 
 /******************************************
  * 升目の作成
@@ -664,5 +573,5 @@ function setInfo(){
         tturn="後手"
     }
     var info=document.querySelector("#info");
-    info.innerHTML=tturn+" "+(times+1)+"手目"+getUSI();
+    info.innerHTML=tturn+" "+(times+1)+"手目";
 }
