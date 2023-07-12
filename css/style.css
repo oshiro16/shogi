@@ -49,10 +49,10 @@ tbody{
 .cell[st="movedfm"]{
 	background-color:rgb(256, 256, 245);
 }
-.cell[turn="w"][data-dir="s"]{
+.cell[turn="w"][data-dir="sente"]{
   transform: rotate(180deg);
 }
-.cell[turn="b"][data-dir="r"]{
+.cell[turn="b"][data-dir="gote"]{
 	transform: rotate(180deg);
   }
   
@@ -63,10 +63,10 @@ tbody{
 	text-align: center;
 }
 
-.stand[turn="w"][data-dir="s"]{
+.stand[turn="w"][data-dir="sente"]{
   transform: rotate(180deg);
 }
-.stand[turn="b"][data-dir="r"]{
+.stand[turn="b"][data-dir="gote"]{
 	transform: rotate(180deg);
 }
   

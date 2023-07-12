@@ -1,7 +1,6 @@
 var iniboard="lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b - 1";
 const posy2usi=["","a","b","c","d","e","f","g","h","i"];
 const posy2kigou=["","一","二","三","四","五","六","七","八","九"];
-const holdName=["R","B","G","S","N","L","P"];
 
 
 const kifuUSIList=[];//棋譜（USI）
@@ -76,7 +75,7 @@ function getKigou(fPos,tPos,nari,piece){
         kigou=kigou+x+posy2kigou[y];
     }
 
-    kigou+=getPieceName(piece);
+    kigou+=pieceChar[pieceCode.indexOf(piece)];
     if(fPos.substr(1,1)=="*"){
         kigou+="打";
     }
@@ -115,14 +114,14 @@ function getUSI(){
     var num=0;
     for(var i=0;i<9;i++){
         for(var j=0;j<9;j++){
-            if(btable[i][j]==0){
+            if(table[i][j]==0){
                 num++;
             }else{
                 if(num>0){
                     str+=num;
                     num=0;
                 }
-                str+=btable[i][j];
+                str+=table[i][j];
             }
         }
         if(num>0){
@@ -135,20 +134,20 @@ function getUSI(){
     }
 
     strHold="";
-    for(var i=0;i<bholds.length;i++){
-        if(bholds[i]>0){
-            if(bholds[i]>1){
-                strHold+=bholds[i];
+    for(var i=0;i<7;i++){
+        if(holds[i]>0){
+            if(holds[i]>1){
+                strHold+=holds[i];
             }
-            strHold+=holdName[i];
+            strHold+=holdsName[i];
         }
     }
-    for(var i=0;i<wholds.length;i++){
-        if(wholds[i]>0){
-            if(wholds[i]>1){
-                strHold+=wholds[i];
+    for(var i=7;i<14;i++){
+        if(holds[i]>0){
+            if(holds[i]>1){
+                strHold+=holds[i];
             }
-            strHold+=holdName[i].toLowerCase();
+            strHold+=holdsName[i].toLowerCase();
         }
     }
     if(strHold.length==0){
