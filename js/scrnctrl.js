@@ -126,7 +126,9 @@ function selectCell(e){
     if(start==false){
         return;
     }
-
+    if(!(myTurn == turn)){
+        return;
+    }
     //駒を動かす
     var st=e.getAttribute('st');
     if(st == 'movable'){
@@ -173,6 +175,7 @@ function movePiece(e){
     var moveUSI=getClickMoveUSI(e);
     kifuUSIList.push(moveUSI);
     moveByUSI(moveUSI);
+    wsSend("position moves "+moveUSI);
 }
 
 /**

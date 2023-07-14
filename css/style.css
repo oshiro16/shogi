@@ -85,3 +85,10 @@ tbody{
 .stand[st="movedfm"]{
 	background-color:pink;
 }
+
+
+.user{
+	font-size:4vw;
+	font-family: "Hiragino maru Gothic ProN W4", "Hiragino Kaku Gothic Pro","Hiragino Sans", "arial", "Meiryo", "MS PGothic", sans-serif!important;
+	color:black;
+}
