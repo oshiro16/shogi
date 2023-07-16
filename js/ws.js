@@ -7,8 +7,8 @@ function setUsername(name){
 }
 
 function wsConnect(){
-    connection = new WebSocket("ws://localhost:8080/ap/SGWebsocket");
-    // var connection = new WebSocket("wss://tmasy.net/shogi/SGWebsocket");
+    // connection = new WebSocket("ws://localhost:8080/ap/SGWebsocket");
+    connection = new WebSocket("wss://tmasy.net/shogi/SGWebsocket");
 
     connection.onopen=function(e){
         wsSend("usinewgame "+username);
